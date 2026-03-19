@@ -1,3 +1,8 @@
+variable "profile" {
+  type    = string
+  default = "default"
+}
+
 variable "region" {
   description = "Environment name"
   type        = string
@@ -9,4 +14,16 @@ variable "environment" {
 
 variable "common_tags" {
   type = map(string)
+}
+
+variable "vpcs" {
+  type = list(string)
+}
+
+variable "private_subnets" {
+  type = map(string)
+}
+
+variable "private_subnets_availability_zone" {
+  type = string
 }
