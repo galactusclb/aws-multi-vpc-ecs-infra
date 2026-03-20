@@ -24,6 +24,6 @@ variable "private_subnets" {
   type = map(string)
 }
 
-variable "private_subnets_availability_zone" {
-  type = string
+variable "availability_zones" {
+  type = list(string)
 }

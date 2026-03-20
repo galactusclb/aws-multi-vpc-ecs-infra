@@ -17,7 +17,7 @@ module "vpc_workload" {
 
   cidr_block        = var.vpcs[0]
   private_subnets   = var.private_subnets
-  availability_zone = var.private_subnets_availability_zone
+  availability_zones = var.availability_zones
 }
 
 locals {
@@ -27,8 +27,11 @@ module "alb" {
   source = "./resources/workload/alb"
 
   vpc_id                   = module.vpc_workload.vpc_id
-  subnets                  = [var.private_subnets["web"]]
-  alb_sg_ingress_id        = ""
+  subnets                  = [
+    module.vpc_workload.private_subnet_ids["web"],
+    module.vpc_workload.private_subnet_ids["web2"]
+  ]
+  alb_sg_ingress_id        = module.nlb.nlb_sg_id
   alb_sg_ingress_from_port = local.listener_port
   alb_sg_ingress_to_port   = local.listener_port
 }
@@ -37,17 +40,18 @@ module "nlb" {
   source = "./resources/workload/nlb"
 
   vpc_id = module.vpc_workload.vpc_id
-  nlb_subnets = [var.private_subnets["web"]]
+  nlb_subnets = [module.vpc_workload.private_subnet_ids["web"]]
 
   alb_arn = module.alb.alb_arn
   listener_port= local.listener_port
+  alb_listener_dependency = module.alb.alb_arn
 }
 
 module "ecs" {
   source = "./resources/workload/ecs"
 
   vpc_id = module.vpc_workload.vpc_id
-  subnets = [var.private_subnets["app"]]
+  subnets = [module.vpc_workload.private_subnet_ids["app"]]
 
   alb_arn = module.alb.alb_arn
   alb_sg_id = module.alb.alb_sg_id

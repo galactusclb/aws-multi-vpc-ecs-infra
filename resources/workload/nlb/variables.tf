@@ -15,3 +15,7 @@ variable "alb_arn" {
   type = string
   description = "ALB arn of NLB forward traffic to"
 }
+
+variable "alb_listener_dependency" {
+  type = string
+}
