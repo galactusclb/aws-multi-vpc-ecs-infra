@@ -42,3 +42,14 @@ module "nlb" {
   alb_arn = module.alb.alb_arn
   listener_port= local.listener_port
 }
+
+module "ecs" {
+  source = "./resources/workload/ecs"
+
+  vpc_id = module.vpc_workload.vpc_id
+  subnets = [var.private_subnets["app"]]
+
+  alb_arn = module.alb.alb_arn
+  alb_sg_id = module.alb.alb_sg_id
+  listener_port = local.listener_port
+}
