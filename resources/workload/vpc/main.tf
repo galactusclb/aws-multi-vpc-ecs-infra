@@ -1,4 +1,4 @@
-resource "aws_vpc" "this" {
+resource "aws_vpc" "workload" {
   cidr_block = var.cidr_block
   
   tags = {
@@ -9,7 +9,7 @@ resource "aws_vpc" "this" {
 resource "aws_subnet" "this" {
   for_each = var.private_subnets
 
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.workload.id
   cidr_block = each.value
 
   availability_zone = strcontains(each.key, "2") ? var.availability_zones[1] : var.availability_zones[0]
@@ -20,7 +20,7 @@ resource "aws_subnet" "this" {
 }
 
 resource "aws_route_table" "this" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.workload.id
 
   # ToDo Need to add TGW route
   route {
@@ -41,7 +41,7 @@ resource "aws_route_table_association" "this" {
 }
 
 resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.this.id
+  vpc_id = aws_vpc.workload.id
 
   tags = {
     Name = "workload-igw"

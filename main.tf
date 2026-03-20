@@ -12,10 +12,11 @@ provider "aws" {
   }
 }
 
+// Workload VPC
 module "vpc_workload" {
   source = "./resources/workload/vpc"
 
-  cidr_block        = var.vpcs[0]
+  cidr_block        = var.vpc_workload_cidr
   private_subnets   = var.private_subnets
   availability_zones = var.availability_zones
 }
@@ -23,6 +24,7 @@ module "vpc_workload" {
 locals {
   listener_port = 80
 }
+
 module "alb" {
   source = "./resources/workload/alb"
 
@@ -57,3 +59,32 @@ module "ecs" {
   alb_sg_id = module.alb.alb_sg_id
   listener_port = local.listener_port
 }
+
+
+// Internet VPC
+module "vpc_internet" {
+  source = "./resources/internet/vpc"
+
+  cidr_block = var.vpc_internet_cidr
+  availability_zones = var.availability_zones
+  subnets = var.public_subnets
+}
+
+module "internet-alb" {
+    source = "./resources/internet/alb"
+
+    subnets = [
+      module.vpc_internet.public_subnet_ids["gateway"],
+      module.vpc_internet.public_subnet_ids["gateway2"],
+    ]
+}
+
+# module "tgw" {
+#   source = "./resources/tgw"
+
+#   vpc_id_workload = module.vpc_workload.vpc_id
+#   subnets_workload = [module.vpc_workload.private_subnet_ids["tgw"]]
+  
+#   vpc_id_internet = module.vpc_internet.vpc_id
+#   subnets_internet = [module.vpc_internet.public_subnet_ids["tgw"]]
+# }

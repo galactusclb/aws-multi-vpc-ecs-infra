@@ -8,9 +8,9 @@ common_tags = {
 }
 
 
-vpcs = [
-    "10.0.0.0/16"
-]
+vpc_workload_cidr = "10.0.0.0/16"
+vpc_internet_cidr = "13.0.0.0/16"
+availability_zones = ["us-east-1a", "us-east-1b"]
 private_subnets = {
     "web" = "10.0.1.0/24",
     "web2" = "10.0.2.0/24",
@@ -19,4 +19,10 @@ private_subnets = {
     "data2" = "10.0.5.0/24",
     "tgw" = "10.0.6.0/24",
 }
-availability_zones = ["us-east-1a", "us-east-1b"]
+
+public_subnets = {
+    "gateway" : "13.0.1.0/24",
+    "gateway2" : "13.0.2.0/24",
+    "firewall" : "13.0.3.0/24",
+    "tgw" = "10.0.4.0/24",
+}
