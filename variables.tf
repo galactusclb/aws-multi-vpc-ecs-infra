@@ -29,10 +29,14 @@ variable "vpc_internet_cidr" {
 }
 
 
-variable "private_subnets" {
+variable "workload_subnets" {
   type = map(string)
 }
 
-variable "public_subnets" {
+variable "internet_public_subnets" {
+  type = map(string)
+}
+
+variable "internet_private_subnets" {
   type = map(string)
 }

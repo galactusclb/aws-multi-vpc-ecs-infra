@@ -17,7 +17,7 @@ module "vpc_workload" {
   source = "./resources/workload/vpc"
 
   cidr_block        = var.vpc_workload_cidr
-  private_subnets   = var.private_subnets
+  private_subnets   = var.workload_subnets
   availability_zones = var.availability_zones
 
   internet_vpc_cidr = module.vpc_internet.vpc_cidr
@@ -72,13 +72,11 @@ module "vpc_internet" {
 
   cidr_block = var.vpc_internet_cidr
   availability_zones = var.availability_zones
-  subnets = var.public_subnets
+  private_subnets = var.internet_private_subnets
+  public_subnets = var.internet_public_subnets
 
   workload_vpc_cidr = module.vpc_workload.vpc_cidr
   transit_gateway_id = module.tgw.tgw-id
-  # dependency_transit_gateway = module.tgw
-
-  # depends_on = [module.tgw]
 }
 
 module "internet-alb" {
@@ -104,5 +102,5 @@ module "tgw" {
   subnets_workload = [module.vpc_workload.private_subnet_ids["tgw"]]
   
   vpc_id_internet = module.vpc_internet.vpc_id
-  subnets_internet = [module.vpc_internet.public_subnet_ids["tgw"]]
+  subnets_internet = [module.vpc_internet.private_subnet_ids["tgw"]]
 }

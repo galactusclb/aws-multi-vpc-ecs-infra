@@ -2,7 +2,11 @@ variable "cidr_block" {
   type = string
 }
 
-variable "subnets" {
+variable "public_subnets" {
+  type = map(string)
+}
+
+variable "private_subnets" {
   type = map(string)
 }
 
