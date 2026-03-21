@@ -11,3 +11,7 @@ output "private_subnet_ids" {
     for k, v in aws_subnet.this : k => v.id
   }
 }
+
+output "route_table_id" {
+  value = aws_route_table.this.id
+}

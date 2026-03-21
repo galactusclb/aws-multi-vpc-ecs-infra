@@ -1,22 +1,6 @@
 data "external" "nlb_ips" {
-  # depends_on = [var.nlb_dependency]
-
-  # program = [
-  #   "bash",
-  #   "${path.module}/scripts/get_nlb_ips.sh",
-  #   var.workload_nlb_name,
-  #   "us-east-1"
-  # ]
-
-  # program = [
-  #   "C:/Program Files/Git/bin/bash.exe",
-  #   "${path.module}/scripts/get_nlb_ips.sh",
-  #   var.workload_nlb_name,
-  #   "us-east-1"
-  # ]
-
   program = [
-    "C:/Program Files/Git/bin/bash.exe",
+    "bash",
     "${path.module}/scripts/get_nlb_ips.sh",
     var.workload_nlb_name,
     "us-east-1"
@@ -24,8 +8,6 @@ data "external" "nlb_ips" {
 }
 
 locals {
-  # nlb_private_ips = data.external.nlb_ips.result.ips
-  # nlb_private_ips =  split(",", data.external.nlb_ips.result.ips)
   nlb_private_ips = compact(split(",", data.external.nlb_ips.result.ips))
 }
 
@@ -86,18 +68,14 @@ resource "aws_lb_target_group" "to_workload_nlb" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "nlb_ip_1" {
+resource "aws_lb_target_group_attachment" "nlb_ips" {
+  for_each = toset(local.nlb_private_ips)
+
   target_group_arn  = aws_lb_target_group.to_workload_nlb.arn
-  target_id         = local.nlb_private_ips[0]
-  availability_zone = "us-east-1a"
+  target_id         = each.value
+  availability_zone = "all"
   port              = 80
 }
-
-# resource "aws_lb_target_group_attachment" "nlb_ip_2" {
-#   target_group_arn = aws_lb_target_group.to_workload_nlb.arn
-#   target_id        = local.nlb_private_ips[1]
-#   port             = 80
-# }
 
 resource "aws_lb_listener" "this" {
   load_balancer_arn = aws_lb.internet-alb.arn

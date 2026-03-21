@@ -49,12 +49,7 @@ resource "aws_route_table" "internet-rt-public" {
     gateway_id = aws_internet_gateway.this.id
   }
 
-  route {
-    cidr_block = var.workload_vpc_cidr
-    transit_gateway_id = var.transit_gateway_id
-  }
- 
-   tags = {
+  tags = {
     Name = "internet-rt-public"
   }
 }
@@ -75,7 +70,7 @@ resource "aws_eip" "nat" {
 }
 
 resource "aws_nat_gateway" "this" {
-  subnet_id = aws_subnet.private["gateway3"].id
+  subnet_id     = aws_subnet.public[var.nat_gateway_public_subnet_key].id
   allocation_id = aws_eip.nat.id
 
   depends_on = [aws_internet_gateway.this]
@@ -90,11 +85,6 @@ resource "aws_route_table" "internet-rt-private" {
   route {
     cidr_block     = "0.0.0.0/0"
     nat_gateway_id = aws_nat_gateway.this.id
-  }
-
-  route {
-    transit_gateway_id = var.transit_gateway_id
-    cidr_block = var.workload_vpc_cidr
   }
 
   tags = {

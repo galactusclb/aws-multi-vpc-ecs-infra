@@ -14,14 +14,6 @@ variable "availability_zones" {
   type = list(string)
 }
 
-variable "workload_vpc_cidr" {
+variable "nat_gateway_public_subnet_key" {
   type = string
 }
-
-variable "transit_gateway_id" {
-  type = string
-}
-
-# variable "dependency_transit_gateway_arn" {
-#   type = string
-# }
