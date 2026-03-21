@@ -25,7 +25,7 @@ variable "vpc_workload_cidr" {
 }
 
 variable "vpc_internet_cidr" {
-    type = string
+  type = string
 }
 
 

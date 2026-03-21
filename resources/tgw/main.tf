@@ -14,8 +14,8 @@ resource "aws_ec2_transit_gateway_vpc_attachment" "workload" {
 
 resource "aws_ec2_transit_gateway_vpc_attachment" "internet" {
   transit_gateway_id = aws_ec2_transit_gateway.this.id
-  vpc_id = var.vpc_id_internet
-  subnet_ids = var.subnets_internet
+  vpc_id             = var.vpc_id_internet
+  subnet_ids         = var.subnets_internet
 
   tags = {
     Name = "internet-vpc-attachment"

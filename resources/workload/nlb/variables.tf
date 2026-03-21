@@ -1,25 +1,17 @@
 variable "nlb_subnets" {
-    type = list(string)
+  type = list(string)
 }
 
 variable "vpc_id" {
-    type = string
+  type = string
 }
 
 variable "listener_port" {
-    type = number
-    default = 80
+  type    = number
+  default = 80
 }
 
 variable "alb_arn" {
-  type = string
+  type        = string
   description = "ALB arn of NLB forward traffic to"
-}
-
-variable "alb_listener_dependency" {
-  type = string
-}
-
-variable "internet_vpc_cidr" {
-  type = string  
 }

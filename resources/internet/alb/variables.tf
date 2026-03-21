@@ -1,5 +1,5 @@
 variable "vpc_id" {
-  type = string  
+  type = string
 }
 
 variable "subnets" {
@@ -7,7 +7,7 @@ variable "subnets" {
 }
 
 variable "workload_vpc_cidr" {
-  type = string  
+  type = string
 }
 
 variable "nlb_dependency" {

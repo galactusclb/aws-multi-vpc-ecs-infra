@@ -11,9 +11,9 @@ variable "alb_sg_ingress_id" {
 }
 
 variable "alb_sg_ingress_from_port" {
- type = string
+  type = string
 }
 
 variable "alb_sg_ingress_to_port" {
- type = string
+  type = string
 }

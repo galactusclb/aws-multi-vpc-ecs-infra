@@ -1,13 +1,13 @@
 variable "vpc_id_workload" {
-    type = string
+  type = string
 }
 variable "subnets_workload" {
-    type = list(string)
+  type = list(string)
 }
 
 variable "vpc_id_internet" {
-    type = string
+  type = string
 }
 variable "subnets_internet" {
-    type = list(string)
+  type = list(string)
 }
