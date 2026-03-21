@@ -15,8 +15,8 @@ resource "aws_ecs_task_definition" "this" {
     container_definitions = jsonencode([
         {
             name = "echoserver",
-            image = "k8s.gcr.io/e2e-test-images/echoserver:2.5",
-            # image = "registry.k8s.io/e2e-test-images/echoserver:2.5",
+            # image = "k8s.gcr.io/e2e-test-images/echoserver:2.5",
+            image = "registry.k8s.io/e2e-test-images/echoserver:2.5",
             # image = "nginx",
             cpu       = 256,
             memory    = 1048,

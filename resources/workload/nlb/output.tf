@@ -9,3 +9,7 @@ output "nlb_arn" {
 output "nlb_sg_id" {
   value = aws_security_group.nlb-sg.id
 }
+
+output "nlb_name" {
+  value = aws_lb.workload-nlb.name
+}

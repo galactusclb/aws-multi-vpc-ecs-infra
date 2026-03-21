@@ -1,6 +1,6 @@
 resource "aws_alb" "this" {
     name = "workload-alb"
-    internal           = false
+    internal           = true
     load_balancer_type = "application"
     subnets = var.subnets
     security_groups = [aws_security_group.alb-sg.id]
@@ -27,7 +27,9 @@ resource "aws_vpc_security_group_ingress_rule" "allow_nlb_traffic" {
     description = "Allow ingress from NLB"
     security_group_id = aws_security_group.alb-sg.id
 
-    referenced_security_group_id = var.alb_sg_ingress_id
+    # ToDo Debug
+    # referenced_security_group_id = var.alb_sg_ingress_id
+    cidr_ipv4 = "0.0.0.0/0"
     # cidr_ipv4 = "0.0.0.0/16"
     from_port = var.alb_sg_ingress_from_port
     to_port = var.alb_sg_ingress_to_port

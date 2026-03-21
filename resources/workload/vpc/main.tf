@@ -23,10 +23,10 @@ resource "aws_route_table" "this" {
   vpc_id = aws_vpc.workload.id
 
   # ToDo Need to add TGW route
-  route {
-    cidr_block  = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.igw.id
-  }
+  # route {
+  #   cidr_block  = "0.0.0.0/0"
+  #   gateway_id = aws_internet_gateway.igw.id
+  # }
 
   tags = {
     Name: "rt-workload"
@@ -40,10 +40,17 @@ resource "aws_route_table_association" "this" {
   subnet_id = each.value.id
 }
 
-resource "aws_internet_gateway" "igw" {
-  vpc_id = aws_vpc.workload.id
+resource "aws_route" "route-to-tgw" {
+  route_table_id = aws_route_table.this.id
 
-  tags = {
-    Name = "workload-igw"
-  }
+  destination_cidr_block = var.internet_vpc_cidr
+  transit_gateway_id = var.transit_gateway_id
 }
+
+# resource "aws_internet_gateway" "igw" {
+#   vpc_id = aws_vpc.workload.id
+
+#   tags = {
+#     Name = "workload-igw"
+#   }
+# }

@@ -19,6 +19,9 @@ module "vpc_workload" {
   cidr_block        = var.vpc_workload_cidr
   private_subnets   = var.private_subnets
   availability_zones = var.availability_zones
+
+  internet_vpc_cidr = module.vpc_internet.vpc_cidr
+  transit_gateway_id = module.tgw.tgw-id
 }
 
 locals {
@@ -47,6 +50,8 @@ module "nlb" {
   alb_arn = module.alb.alb_arn
   listener_port= local.listener_port
   alb_listener_dependency = module.alb.alb_arn
+
+  internet_vpc_cidr = module.vpc_internet.vpc_cidr
 }
 
 module "ecs" {
@@ -68,6 +73,12 @@ module "vpc_internet" {
   cidr_block = var.vpc_internet_cidr
   availability_zones = var.availability_zones
   subnets = var.public_subnets
+
+  workload_vpc_cidr = module.vpc_workload.vpc_cidr
+  transit_gateway_id = module.tgw.tgw-id
+  # dependency_transit_gateway = module.tgw
+
+  # depends_on = [module.tgw]
 }
 
 module "internet-alb" {
@@ -77,14 +88,21 @@ module "internet-alb" {
       module.vpc_internet.public_subnet_ids["gateway"],
       module.vpc_internet.public_subnet_ids["gateway2"],
     ]
+
+    vpc_id = module.vpc_internet.vpc_id
+    workload_vpc_cidr = module.vpc_workload.vpc_cidr
+    nlb_dependency = module.nlb.nlb_arn
+    workload_nlb_name = module.nlb.nlb_name
+
+     depends_on = [module.nlb]
 }
 
-# module "tgw" {
-#   source = "./resources/tgw"
+module "tgw" {
+  source = "./resources/tgw"
 
-#   vpc_id_workload = module.vpc_workload.vpc_id
-#   subnets_workload = [module.vpc_workload.private_subnet_ids["tgw"]]
+  vpc_id_workload = module.vpc_workload.vpc_id
+  subnets_workload = [module.vpc_workload.private_subnet_ids["tgw"]]
   
-#   vpc_id_internet = module.vpc_internet.vpc_id
-#   subnets_internet = [module.vpc_internet.public_subnet_ids["tgw"]]
-# }
+  vpc_id_internet = module.vpc_internet.vpc_id
+  subnets_internet = [module.vpc_internet.public_subnet_ids["tgw"]]
+}

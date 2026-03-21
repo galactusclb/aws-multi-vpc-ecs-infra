@@ -19,3 +19,7 @@ variable "alb_arn" {
 variable "alb_listener_dependency" {
   type = string
 }
+
+variable "internet_vpc_cidr" {
+  type = string  
+}

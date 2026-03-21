@@ -30,10 +30,10 @@ resource "aws_internet_gateway" "this" {
 resource "aws_route_table" "rt-internet" {
   vpc_id = aws_vpc.internet.id
 
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.this.id
-  }
+  # route {
+  #   cidr_block = "0.0.0.0/0"
+  #   gateway_id = aws_internet_gateway.this.id
+  # }
 
   tags = {
     Name: "rt-internet"
@@ -45,4 +45,20 @@ resource "aws_route_table_association" "this" {
 
   route_table_id = aws_route_table.rt-internet.id
   subnet_id = each.value.id
+}
+
+resource "aws_route" "route-to-igw" {
+  route_table_id = aws_route_table.rt-internet.id
+
+  destination_cidr_block  = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.this.id
+}
+
+resource "aws_route" "route-to-tgw" {
+  route_table_id = aws_route_table.rt-internet.id
+
+  destination_cidr_block = var.workload_vpc_cidr
+  transit_gateway_id = var.transit_gateway_id
+
+  # depends_on = [ var.dependency_transit_gateway ]
 }
