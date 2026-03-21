@@ -97,6 +97,7 @@ module "tgw" {
   subnets_internet = [module.vpc_internet.private_subnet_ids["tgw"]]
 }
 
+# Configure TGW routes to route tables
 resource "aws_route" "workload_default_to_tgw" {
   route_table_id         = module.vpc_workload.route_table_id
   destination_cidr_block = "0.0.0.0/0"
