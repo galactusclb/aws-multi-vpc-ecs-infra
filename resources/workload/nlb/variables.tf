@@ -8,6 +8,11 @@ variable "vpc_id" {
   type        = string
 }
 
+variable "frontend_private_ips" {
+  description = "Ordered list of private IPs assigned to the workload NLB subnet mappings."
+  type        = list(string)
+}
+
 variable "listener_port" {
   description = "Port exposed by the workload NLB listener and target group."
   type        = number

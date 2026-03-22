@@ -50,6 +50,7 @@ module "nlb" {
 
   alb_arn       = module.alb.alb_arn
   listener_port = local.listener_port
+  frontend_private_ips = var.workload_nlb_frontend_private_ips
 
   depends_on = [module.ecs]
 }
@@ -108,15 +109,16 @@ module "internet-alb" {
     module.vpc_internet.public_subnet_ids["gateway2"],
   ]
 
-  vpc_id            = module.vpc_internet.vpc_id
-  workload_vpc_cidr = module.vpc_workload.vpc_cidr
-  workload_nlb_name = module.nlb.nlb_name
+  vpc_id                   = module.vpc_internet.vpc_id
+  workload_vpc_cidr        = module.vpc_workload.vpc_cidr
+  workload_nlb_name        = module.nlb.nlb_name
+  workload_nlb_private_ips = var.workload_nlb_frontend_private_ips
 
   depends_on = [module.nlb]
 }
 
 module "tgw" {
-  source = "./resources/tgw"
+  source = "./resources/common/tgw"
 
   vpc_id_workload  = module.vpc_workload.vpc_id
   subnets_workload = [module.vpc_workload.private_subnet_ids["tgw"]]

@@ -1,4 +1,4 @@
-profile = "bit"
+profile = "default"
 
 region      = "us-east-1"
 environment = "dev"
@@ -30,6 +30,11 @@ internet_private_subnets = {
   "gateway3" : "13.0.4.0/24",
   "tgw" = "13.0.5.0/24",
 }
+
+workload_nlb_frontend_private_ips = [
+  "10.0.1.10",
+  "10.0.2.10",
+]
 
 rds_cluster_identifier = "app-aurora"
 rds_database_name      = "appdb"

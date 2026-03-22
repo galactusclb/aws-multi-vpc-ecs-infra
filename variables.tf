@@ -50,6 +50,11 @@ variable "internet_private_subnets" {
   type        = map(string)
 }
 
+variable "workload_nlb_frontend_private_ips" {
+  description = "Ordered list of private IPs assigned to the internal workload NLB frontend, aligned with the NLB subnet order."
+  type        = list(string)
+}
+
 variable "rds_cluster_identifier" {
   description = "Identifier used for the Aurora cluster."
   type        = string

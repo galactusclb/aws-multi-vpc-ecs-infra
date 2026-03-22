@@ -33,7 +33,7 @@ resource "aws_lb" "internet-alb" {
   security_groups = [aws_security_group.alb-sg.id]
   subnets         = var.subnets
 
-  
+
   # enable_cross_zone_load_balancing = true
 
   tags = {
@@ -54,18 +54,13 @@ resource "aws_lb_target_group" "to_workload_nlb" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "alb_to_nlb_attachment_1" {
-  target_group_arn = aws_lb_target_group.to_workload_nlb.arn
-  target_id        = "10.0.1.10"
-  port             = 80
-  availability_zone = "all"
-}
+resource "aws_lb_target_group_attachment" "alb_to_nlb_attachment" {
+  for_each = toset(var.workload_nlb_private_ips)
 
-resource "aws_lb_target_group_attachment" "alb_to_nlb_attachment_2" {
-  target_group_arn = aws_lb_target_group.to_workload_nlb.arn
-  target_id        = "10.0.2.10"
+  target_group_arn  = aws_lb_target_group.to_workload_nlb.arn
+  target_id         = each.value
   availability_zone = "all"
-  port             = 80
+  port              = 80
 }
 
 resource "aws_lb_listener" "this" {

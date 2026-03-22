@@ -17,3 +17,8 @@ variable "workload_nlb_name" {
   description = "Name of the internal workload NLB used to discover and register its private IPs."
   type        = string
 }
+
+variable "workload_nlb_private_ips" {
+  description = "List of private IPs registered in the internet ALB target group for the workload NLB."
+  type        = list(string)
+}

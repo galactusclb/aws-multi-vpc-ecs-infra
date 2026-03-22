@@ -30,12 +30,12 @@ resource "aws_lb" "workload-nlb" {
 
   subnet_mapping {
     subnet_id            = var.nlb_subnets[0]
-    private_ipv4_address = "10.0.1.10"
+    private_ipv4_address = var.frontend_private_ips[0]
   }
 
   subnet_mapping {
     subnet_id            = var.nlb_subnets[1]
-    private_ipv4_address = "10.0.2.10"
+    private_ipv4_address = var.frontend_private_ips[1]
   }
 
   security_groups = [aws_security_group.nlb-sg.id]
