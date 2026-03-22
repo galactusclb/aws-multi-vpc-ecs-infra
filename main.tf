@@ -42,7 +42,7 @@ module "alb" {
 module "nlb" {
   source = "./resources/workload/nlb"
 
-  vpc_id      = module.vpc_workload.vpc_id
+  vpc_id = module.vpc_workload.vpc_id
   nlb_subnets = [
     module.vpc_workload.private_subnet_ids["web"],
     module.vpc_workload.private_subnet_ids["web2"],
@@ -57,12 +57,15 @@ module "nlb" {
 module "rds" {
   source = "./resources/workload/rds"
 
-  cluster_identifier = "app-aurora"
-  database_name    = "appdb"
-  master_username  = "dbadminuser"
+  cluster_identifier = var.rds_cluster_identifier
+  engine_version     = var.rds_engine_version
+  database_name      = var.rds_database_name
+  master_username    = var.rds_master_username
+  instance_class     = var.rds_instance_class
+  instance_count     = var.rds_instance_count
 
   vpc_id = module.vpc_workload.vpc_id
-  subnet_ids = [ 
+  subnet_ids = [
     module.vpc_workload.private_subnet_ids["data"],
     module.vpc_workload.private_subnet_ids["data2"],
   ]
@@ -93,7 +96,7 @@ module "vpc_internet" {
   public_subnets                = var.internet_public_subnets
   nat_gateway_public_subnet_key = "gateway"
 
-  tgw-id = module.tgw.tgw-id
+  tgw-id            = module.tgw.tgw-id
   vpc_workload_cidr = module.vpc_workload.vpc_cidr
 }
 

@@ -1,17 +1,20 @@
 variable "nlb_subnets" {
-  type = list(string)
+  description = "List of subnet IDs where the internal workload NLB is deployed."
+  type        = list(string)
 }
 
 variable "vpc_id" {
-  type = string
+  description = "VPC ID where the internal workload NLB and its security group are created."
+  type        = string
 }
 
 variable "listener_port" {
-  type    = number
-  default = 80
+  description = "Port exposed by the workload NLB listener and target group."
+  type        = number
+  default     = 80
 }
 
 variable "alb_arn" {
+  description = "ARN of the internal workload ALB that receives traffic from the NLB."
   type        = string
-  description = "ALB arn of NLB forward traffic to"
 }

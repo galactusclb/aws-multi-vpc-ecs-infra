@@ -1,15 +1,19 @@
 variable "vpc_id" {
-  type = string
+  description = "VPC ID where the internet-facing ALB and its security group are created."
+  type        = string
 }
 
 variable "subnets" {
-  type = list(string)
+  description = "List of public subnet IDs where the internet-facing ALB is deployed."
+  type        = list(string)
 }
 
 variable "workload_vpc_cidr" {
-  type = string
+  description = "CIDR block of the workload VPC allowed as egress from the internet ALB."
+  type        = string
 }
 
 variable "workload_nlb_name" {
-  type = string
+  description = "Name of the internal workload NLB used to discover and register its private IPs."
+  type        = string
 }

@@ -1,13 +1,17 @@
 variable "vpc_id_workload" {
-  type = string
+  description = "ID of the workload VPC attached to the transit gateway."
+  type        = string
 }
 variable "subnets_workload" {
-  type = list(string)
+  description = "List of workload VPC subnet IDs used for the transit gateway attachment."
+  type        = list(string)
 }
 
 variable "vpc_id_internet" {
-  type = string
+  description = "ID of the internet VPC attached to the transit gateway."
+  type        = string
 }
 variable "subnets_internet" {
-  type = list(string)
+  description = "List of internet VPC subnet IDs used for the transit gateway attachment."
+  type        = list(string)
 }

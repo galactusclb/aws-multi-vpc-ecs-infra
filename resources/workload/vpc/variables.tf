@@ -1,15 +1,19 @@
 variable "cidr_block" {
-  type = string
+  description = "CIDR block for the workload VPC."
+  type        = string
 }
 
 variable "private_subnets" {
-  type = map(string)
+  description = "Map of workload private subnet names to CIDR blocks."
+  type        = map(string)
 }
 
 variable "availability_zones" {
-  type = list(string)
+  description = "Ordered list of availability zones used to place workload subnets."
+  type        = list(string)
 }
 
 variable "tgw-id" {
-  type = string
+  description = "Transit gateway ID used for workload VPC route table entries."
+  type        = string
 }

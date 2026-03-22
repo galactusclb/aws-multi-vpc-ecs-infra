@@ -30,3 +30,10 @@ internet_private_subnets = {
   "gateway3" : "13.0.4.0/24",
   "tgw" = "13.0.5.0/24",
 }
+
+rds_cluster_identifier = "app-aurora"
+rds_database_name      = "appdb"
+rds_master_username    = "dbadminuser"
+rds_engine_version     = "16.4"
+rds_instance_class     = "db.t4g.medium"
+rds_instance_count     = 1

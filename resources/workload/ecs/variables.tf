@@ -1,23 +1,29 @@
 variable "vpc_id" {
-  type = string
+  description = "VPC ID where the ECS service and its security group are created."
+  type        = string
 }
 
 variable "subnets" {
-  type = list(string)
+  description = "List of private subnet IDs where ECS tasks are launched."
+  type        = list(string)
 }
 
 variable "alb_sg_id" {
-  type = string
+  description = "Security group ID of the internal workload ALB."
+  type        = string
 }
 
 variable "alb_arn" {
-  type = string
+  description = "ARN of the internal workload ALB used by the ECS listener."
+  type        = string
 }
 
 variable "listener_port" {
-  type = number
+  description = "Port exposed by the workload ALB listener for the ECS service."
+  type        = number
 }
 
 variable "db_endpoint" {
-  type = string
+  description = "Database endpoint injected into the ECS task configuration."
+  type        = string
 }

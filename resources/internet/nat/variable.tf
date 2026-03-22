@@ -1,3 +1,4 @@
 variable "subnet_id" {
-  type = string
+  description = "Subnet ID where the standalone NAT gateway should be created."
+  type        = string
 }

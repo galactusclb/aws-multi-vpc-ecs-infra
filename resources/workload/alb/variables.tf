@@ -1,15 +1,19 @@
 variable "subnets" {
-  type = list(string)
+  description = "List of private subnet IDs where the internal workload ALB is deployed."
+  type        = list(string)
 }
 
 variable "vpc_id" {
-  type = string
+  description = "VPC ID where the internal workload ALB and its security group are created."
+  type        = string
 }
 
 variable "alb_sg_ingress_from_port" {
-  type = string
+  description = "Starting port allowed inbound to the workload ALB security group."
+  type        = string
 }
 
 variable "alb_sg_ingress_to_port" {
-  type = string
+  description = "Ending port allowed inbound to the workload ALB security group."
+  type        = string
 }
