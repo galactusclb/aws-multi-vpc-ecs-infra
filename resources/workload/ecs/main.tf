@@ -15,9 +15,8 @@ resource "aws_ecs_task_definition" "this" {
   container_definitions = jsonencode([
     {
       name = "echoserver",
-      # image = "k8s.gcr.io/e2e-test-images/echoserver:2.5",
-      image = "registry.k8s.io/e2e-test-images/echoserver:2.5",
-      # image = "nginx",
+      image = "k8s.gcr.io/e2e-test-images/echoserver:2.5",
+      # image = "registry.k8s.io/e2e-test-images/echoserver:2.5",
       cpu               = 256,
       memory            = 1048,
       memoryReservation = 512,
@@ -26,7 +25,10 @@ resource "aws_ecs_task_definition" "this" {
           containerPort = 8080
         }
       ],
-      essential = true
+      environment: [
+        {"name": "db_endpint", "value": var.db_endpoint}
+      ],
+      essential = true,
     }
   ])
 

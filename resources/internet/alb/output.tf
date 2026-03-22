@@ -1,3 +1,3 @@
-output "debug_nlb_ips" {
-  value = data.external.nlb_ips.result.ips
+output "alb_dns_name" {
+  value = aws_lb.internet-alb.dns_name
 }

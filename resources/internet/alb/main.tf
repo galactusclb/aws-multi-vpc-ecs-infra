@@ -1,17 +1,3 @@
-data "external" "nlb_ips" {
-  program = [
-    "bash",
-    "${path.module}/scripts/get_nlb_ips.sh",
-    var.workload_nlb_name,
-    "us-east-1"
-  ]
-}
-
-locals {
-  nlb_private_ips = compact(split(",", data.external.nlb_ips.result.ips))
-}
-
-
 resource "aws_security_group" "alb-sg" {
   vpc_id = var.vpc_id
   name   = "internet-alb-sg"
@@ -47,7 +33,7 @@ resource "aws_lb" "internet-alb" {
   security_groups = [aws_security_group.alb-sg.id]
   subnets         = var.subnets
 
-  # enable_deletion_protection = false
+  
   # enable_cross_zone_load_balancing = true
 
   tags = {
@@ -68,13 +54,18 @@ resource "aws_lb_target_group" "to_workload_nlb" {
   }
 }
 
-resource "aws_lb_target_group_attachment" "nlb_ips" {
-  for_each = toset(local.nlb_private_ips)
-
-  target_group_arn  = aws_lb_target_group.to_workload_nlb.arn
-  target_id         = each.value
+resource "aws_lb_target_group_attachment" "alb_to_nlb_attachment_1" {
+  target_group_arn = aws_lb_target_group.to_workload_nlb.arn
+  target_id        = "10.0.1.10"
+  port             = 80
   availability_zone = "all"
-  port              = 80
+}
+
+resource "aws_lb_target_group_attachment" "alb_to_nlb_attachment_2" {
+  target_group_arn = aws_lb_target_group.to_workload_nlb.arn
+  target_id        = "10.0.2.10"
+  availability_zone = "all"
+  port             = 80
 }
 
 resource "aws_lb_listener" "this" {

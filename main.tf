@@ -19,6 +19,8 @@ module "vpc_workload" {
   cidr_block         = var.vpc_workload_cidr
   private_subnets    = var.workload_subnets
   availability_zones = var.availability_zones
+
+  tgw-id = module.tgw.tgw-id
 }
 
 locals {
@@ -41,12 +43,31 @@ module "nlb" {
   source = "./resources/workload/nlb"
 
   vpc_id      = module.vpc_workload.vpc_id
-  nlb_subnets = [module.vpc_workload.private_subnet_ids["web"]]
+  nlb_subnets = [
+    module.vpc_workload.private_subnet_ids["web"],
+    module.vpc_workload.private_subnet_ids["web2"],
+  ]
 
   alb_arn       = module.alb.alb_arn
   listener_port = local.listener_port
 
   depends_on = [module.ecs]
+}
+
+module "rds" {
+  source = "./resources/workload/rds"
+
+  cluster_identifier = "app-aurora"
+  database_name    = "appdb"
+  master_username  = "dbadminuser"
+
+  vpc_id = module.vpc_workload.vpc_id
+  subnet_ids = [ 
+    module.vpc_workload.private_subnet_ids["data"],
+    module.vpc_workload.private_subnet_ids["data2"],
+  ]
+
+  referenced_security_group_id = module.ecs.ecs_sg_id
 }
 
 module "ecs" {
@@ -58,8 +79,9 @@ module "ecs" {
   alb_arn       = module.alb.alb_arn
   alb_sg_id     = module.alb.alb_sg_id
   listener_port = local.listener_port
-}
 
+  db_endpoint = module.rds.cluster_endpoint
+}
 
 // Internet VPC
 module "vpc_internet" {
@@ -70,6 +92,9 @@ module "vpc_internet" {
   private_subnets               = var.internet_private_subnets
   public_subnets                = var.internet_public_subnets
   nat_gateway_public_subnet_key = "gateway"
+
+  tgw-id = module.tgw.tgw-id
+  vpc_workload_cidr = module.vpc_workload.vpc_cidr
 }
 
 module "internet-alb" {
@@ -95,29 +120,4 @@ module "tgw" {
 
   vpc_id_internet  = module.vpc_internet.vpc_id
   subnets_internet = [module.vpc_internet.private_subnet_ids["tgw"]]
-}
-
-# Configure TGW routes to route tables
-resource "aws_route" "workload_default_to_tgw" {
-  route_table_id         = module.vpc_workload.route_table_id
-  destination_cidr_block = "0.0.0.0/0"
-  transit_gateway_id     = module.tgw.tgw-id
-
-  depends_on = [module.tgw]
-}
-
-resource "aws_route" "internet_public_to_workload" {
-  route_table_id         = module.vpc_internet.public_route_table_id
-  destination_cidr_block = var.vpc_workload_cidr
-  transit_gateway_id     = module.tgw.tgw-id
-
-  depends_on = [module.tgw]
-}
-
-resource "aws_route" "internet_private_to_workload" {
-  route_table_id         = module.vpc_internet.private_route_table_id
-  destination_cidr_block = var.vpc_workload_cidr
-  transit_gateway_id     = module.tgw.tgw-id
-
-  depends_on = [module.tgw]
 }

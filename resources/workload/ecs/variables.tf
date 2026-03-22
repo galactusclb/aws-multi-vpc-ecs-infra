@@ -17,3 +17,7 @@ variable "alb_arn" {
 variable "listener_port" {
   type = number
 }
+
+variable "db_endpoint" {
+  type = string
+}

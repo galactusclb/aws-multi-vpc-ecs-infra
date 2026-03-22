@@ -17,3 +17,11 @@ variable "availability_zones" {
 variable "nat_gateway_public_subnet_key" {
   type = string
 }
+
+variable "tgw-id" {
+  type = string
+}
+
+variable "vpc_workload_cidr" {
+  type = string
+}

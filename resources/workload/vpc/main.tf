@@ -33,3 +33,9 @@ resource "aws_route_table_association" "this" {
 
   subnet_id = each.value.id
 }
+
+resource "aws_route" "workload_default_to_tgw" {
+  route_table_id         = aws_route_table.this.id
+  destination_cidr_block = "0.0.0.0/0"
+  transit_gateway_id     = var.tgw-id
+}

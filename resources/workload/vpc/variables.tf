@@ -9,3 +9,7 @@ variable "private_subnets" {
 variable "availability_zones" {
   type = list(string)
 }
+
+variable "tgw-id" {
+  type = string
+}

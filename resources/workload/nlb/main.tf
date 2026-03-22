@@ -26,7 +26,17 @@ resource "aws_lb" "workload-nlb" {
   internal           = true
 
   ip_address_type = "ipv4"
-  subnets         = var.nlb_subnets
+  # subnets         = var.nlb_subnets
+
+  subnet_mapping {
+    subnet_id            = var.nlb_subnets[0]
+    private_ipv4_address = "10.0.1.10"
+  }
+
+  subnet_mapping {
+    subnet_id            = var.nlb_subnets[1]
+    private_ipv4_address = "10.0.2.10"
+  }
 
   security_groups = [aws_security_group.nlb-sg.id]
 

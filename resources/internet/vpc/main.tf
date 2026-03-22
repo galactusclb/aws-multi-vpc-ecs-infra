@@ -40,18 +40,24 @@ resource "aws_internet_gateway" "this" {
   }
 }
 
-# ToDo Need to create separate rt for tgw subnet
 resource "aws_route_table" "internet-rt-public" {
   vpc_id = aws_vpc.internet.id
-
-  route {
-    cidr_block = "0.0.0.0/0"
-    gateway_id = aws_internet_gateway.this.id
-  }
 
   tags = {
     Name = "internet-rt-public"
   }
+}
+
+resource "aws_route" "internet_public_rt_to_igw" {
+  route_table_id         = aws_route_table.internet-rt-public.id
+  destination_cidr_block = "0.0.0.0/0"
+  gateway_id = aws_internet_gateway.this.id
+}
+
+resource "aws_route" "internet_public_rt_to_tgw" {
+  route_table_id         = aws_route_table.internet-rt-public.id
+  destination_cidr_block = var.vpc_workload_cidr
+  transit_gateway_id     = var.tgw-id
 }
 
 resource "aws_route_table_association" "public-rt-association" {
@@ -62,7 +68,7 @@ resource "aws_route_table_association" "public-rt-association" {
 }
 
 
-# private route
+##### private route
 resource "aws_eip" "nat" {
   domain = "vpc"
 
@@ -82,14 +88,21 @@ resource "aws_nat_gateway" "this" {
 resource "aws_route_table" "internet-rt-private" {
   vpc_id = aws_vpc.internet.id
 
-  route {
-    cidr_block     = "0.0.0.0/0"
-    nat_gateway_id = aws_nat_gateway.this.id
-  }
-
   tags = {
     Name : "internet-rt-private"
   }
+}
+
+resource "aws_route" "internet_private_rt_to_nat" {
+  route_table_id         = aws_route_table.internet-rt-private.id
+  destination_cidr_block = "0.0.0.0/0"
+  nat_gateway_id = aws_nat_gateway.this.id
+}
+
+resource "aws_route" "internet_private_rt_to_tgw" {
+  route_table_id         = aws_route_table.internet-rt-private.id
+  destination_cidr_block = var.vpc_workload_cidr
+  transit_gateway_id     = var.tgw-id
 }
 
 resource "aws_route_table_association" "private-rt-association" {
