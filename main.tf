@@ -124,3 +124,11 @@ module "tgw" {
   vpc_id_internet  = module.vpc_internet.vpc_id
   subnets_internet = [module.vpc_internet.private_subnet_ids["tgw"]]
 }
+
+
+# Firewalls
+module "waf" {
+  source = "./resources/common/waf"
+
+  internet-alb-arn = module.internet-alb.alb_arn
+}
